@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Monitoreo Almacén Cigarro</title>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f4f6f9;
+      padding: 20px;
+    }
+    h2 {
+      text-align: center;
+      color: #00416A;
+    }
+    .tarjetas-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+    }
+    .tarjeta {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      padding: 15px;
+      width: 320px;
+    }
+    .tarjeta h3 {
+      margin: 0 0 10px;
+      color: #d32f2f;
+    }
+    .tarjeta p {
+      margin: 4px 0;
+      font-size: 14px;
+    }
+    .productos {
+      margin-top: 10px;
+      padding: 8px;
+      background: #f1f1f1;
+      border-radius: 6px;
+    }
+    .productos div {
+      padding: 4px 0;
+      border-bottom: 1px solid #ccc;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Monitoreo de Salidas - Almacén Cigarro</h2>
+  <div class="tarjetas-container" id="contenedorTarjetas"></div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCK5nb6u2CGRJ8AB1aPlRn54b97bdeAFeM",
+      authDomain: "inventariopv-643f1.firebaseapp.com",
+      projectId: "inventariopv-643f1",
+      storageBucket: "inventariopv-643f1.appspot.com",
+      messagingSenderId: "96242533231",
+      appId: "1:96242533231:web:aae75a18fbaf9840529e9a"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const contenedor = document.getElementById("contenedorTarjetas");
+
+    async function cargarSalidas() {
+      const snapshot = await db.collection("almacenes")
+        .doc("almacen_cigarro")
+        .collection("salidas")
+        .orderBy("folio_num", "desc")
+        .get();
+
+      const grupos = {};
+
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        const folio = data.folio || 'SIN FOLIO';
+        if (!grupos[folio]) {
+          grupos[folio] = {
+            fecha: data.fecha,
+            entregado: data.entregado,
+            sucursal: data.sucursal,
+            productos: []
+          };
+        }
+        grupos[folio].productos.push({
+          descripcion: data.descripcion,
+          codigo: data.codigo,
+          cantidad: data.cantidad
+        });
+      });
+
+      Object.entries(grupos).forEach(([folio, info]) => {
+        const tarjeta = document.createElement("div");
+        tarjeta.className = "tarjeta";
+        tarjeta.innerHTML = `
+          <h3>Folio: ${folio}</h3>
+          <p><strong>Fecha:</strong> ${info.fecha || 'N/A'}</p>
+          <p><strong>Destino:</strong> ${info.sucursal || 'N/A'}</p>
+          <p><strong>Entregado por:</strong> ${info.entregado || 'N/A'}</p>
+          <div class="productos">
+            <strong>Artículos:</strong>
+            ${info.productos.map(p => `
+              <div>
+                ${p.descripcion}<br>
+                <small><b>Código:</b> ${p.codigo} | <b>Cantidad:</b> ${p.cantidad}</small>
+              </div>
+            `).join('')}
+          </div>
+        `;
+        contenedor.appendChild(tarjeta);
+      });
+    }
+
+    cargarSalidas();
+  </script>
+</body>
+</html>
