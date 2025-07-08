@@ -3,46 +3,76 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Monitoreo Almacén Cigarro</title>
+  <title>Monitoreo Salidas - Almacén Cigarro</title>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
   <style>
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #f4f6f9;
+      margin: 0;
       padding: 20px;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #00416A, #E4E5E6);
+      color: white;
+      min-height: 100vh;
+      position: relative;
+      box-sizing: border-box;
     }
+
+    .marca-agua {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      opacity: 0.08;
+      z-index: 0;
+      max-width: 80%;
+      height: auto;
+      pointer-events: none;
+    }
+
     h2 {
       text-align: center;
-      color: #00416A;
+      color: white;
+      margin-bottom: 30px;
+      position: relative;
+      z-index: 2;
     }
+
     .tarjetas-container {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
       gap: 20px;
+      position: relative;
+      z-index: 2;
     }
+
     .tarjeta {
-      background: white;
+      background: rgba(255, 255, 255, 0.85);
+      color: #333;
       border-radius: 12px;
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
       padding: 15px;
-      width: 320px;
+      width: 340px;
     }
+
     .tarjeta h3 {
       margin: 0 0 10px;
       color: #d32f2f;
     }
+
     .tarjeta p {
       margin: 4px 0;
       font-size: 14px;
     }
+
     .productos {
       margin-top: 10px;
       padding: 8px;
-      background: #f1f1f1;
+      background: rgba(240, 240, 240, 0.8);
       border-radius: 6px;
     }
+
     .productos div {
       padding: 4px 0;
       border-bottom: 1px solid #ccc;
@@ -51,6 +81,7 @@
   </style>
 </head>
 <body>
+  <img src="logo_proveedora.png" alt="Logo La Proveedora" class="marca-agua">
   <h2>Monitoreo de Salidas - Almacén Cigarro</h2>
   <div class="tarjetas-container" id="contenedorTarjetas"></div>
 
